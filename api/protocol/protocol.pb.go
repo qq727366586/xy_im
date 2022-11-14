@@ -31,31 +31,31 @@ type Proto struct {
 	Body []byte `protobuf:"bytes,4,opt,name=body,proto3" json:"body,omitempty"`
 }
 
-func (x *Proto) Reset() {
-	*x = Proto{}
+func (p *Proto) Reset() {
+	*p = Proto{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_protocol_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(p))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *Proto) String() string {
-	return protoimpl.X.MessageStringOf(x)
+func (p *Proto) String() string {
+	return protoimpl.X.MessageStringOf(p)
 }
 
 func (*Proto) ProtoMessage() {}
 
-func (x *Proto) ProtoReflect() protoreflect.Message {
+func (p *Proto) ProtoReflect() protoreflect.Message {
 	mi := &file_protocol_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	if protoimpl.UnsafeEnabled && p != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(p))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
 		return ms
 	}
-	return mi.MessageOf(x)
+	return mi.MessageOf(p)
 }
 
 // Deprecated: Use Proto.ProtoReflect.Descriptor instead.
@@ -63,30 +63,30 @@ func (*Proto) Descriptor() ([]byte, []int) {
 	return file_protocol_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Proto) GetVer() int32 {
-	if x != nil {
-		return x.Ver
+func (p *Proto) GetVer() int32 {
+	if p != nil {
+		return p.Ver
 	}
 	return 0
 }
 
-func (x *Proto) GetOp() int32 {
-	if x != nil {
-		return x.Op
+func (p *Proto) GetOp() int32 {
+	if p != nil {
+		return p.Op
 	}
 	return 0
 }
 
-func (x *Proto) GetSeq() int32 {
-	if x != nil {
-		return x.Seq
+func (p *Proto) GetSeq() int32 {
+	if p != nil {
+		return p.Seq
 	}
 	return 0
 }
 
-func (x *Proto) GetBody() []byte {
-	if x != nil {
-		return x.Body
+func (p *Proto) GetBody() []byte {
+	if p != nil {
+		return p.Body
 	}
 	return nil
 }

@@ -117,6 +117,7 @@ func (c *Conn) readFrame() (fin bool, op int, payload []byte, err error) {
 	return
 }
 
+// 读消息
 func (c *Conn) ReadMessage() (op int, payload []byte, err error) {
 	var (
 		fin         bool
@@ -198,6 +199,7 @@ func (c *Conn) WriteBody(b []byte) (err error) {
 	return
 }
 
+// 写消息
 func (c *Conn) WriteMessage(msgType int, msg []byte) (err error) {
 	if err = c.WriteHeader(msgType, len(msg)); err != nil {
 		return

@@ -17,6 +17,7 @@ var (
 	ErrChallengeResponse   = errors.New("mismatch challenge/response")
 )
 
+// 升级ws协议
 func Upgrade(rwc io.ReadWriteCloser, rr *bufio.Reader, wr *bufio.Writer, req *Request) (conn *Conn, err error) {
 	if req.Method != "GET" {
 		return nil, ErrBadRequestMethod
@@ -42,6 +43,7 @@ func Upgrade(rwc io.ReadWriteCloser, rr *bufio.Reader, wr *bufio.Writer, req *Re
 	return newConn(rwc, rr, wr), nil
 }
 
+// key
 func computeAcceptKey(challengeKey string) string {
 	h := sha1.New()
 	_, _ = h.Write([]byte(challengeKey))
