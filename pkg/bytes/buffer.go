@@ -62,7 +62,7 @@ func (p *Pool) Get() (b *Buffer) {
 
 func (p *Pool) Put(b *Buffer) {
 	p.lock.Lock()
+	defer p.lock.Unlock()
 	b.next = p.free
 	p.free = b
-	p.lock.Unlock()
 }
