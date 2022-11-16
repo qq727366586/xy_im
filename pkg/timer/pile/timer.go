@@ -40,6 +40,10 @@ func NewTimer(num int) (t *Timer) {
 	return t
 }
 
+func (t *Timer) Init(num int) {
+	t.init(num)
+}
+
 // 初始化
 func (t *Timer) init(num int) {
 	t.signal = time.NewTimer(infiniteDuration)
