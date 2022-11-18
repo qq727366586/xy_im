@@ -5,12 +5,12 @@ import (
 	"math/rand"
 	"runtime"
 	"time"
-	"xy_im/internal/comet"
+	"xy_im/internal/comet/conf"
 )
 
 func main() {
 	flag.Parse()
-	if err := comet.Init(); err != nil {
+	if err := conf.Init(); err != nil {
 		panic(err)
 	}
 	rand.Seed(time.Now().UTC().UnixNano())

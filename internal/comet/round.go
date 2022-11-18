@@ -1,6 +1,7 @@
 package comet
 
 import (
+	"xy_im/internal/comet/conf"
 	"xy_im/pkg/bytes"
 	timer "xy_im/pkg/timer/pile"
 )
@@ -23,7 +24,7 @@ type Round struct {
 	options RoundOptions
 }
 
-func NewRound(c *Config) (r *Round) {
+func NewRound(c *conf.Config) (r *Round) {
 	var i int
 	r = &Round{
 		options: RoundOptions{

@@ -1,4 +1,4 @@
-package comet
+package conf
 
 import (
 	"flag"
@@ -45,20 +45,28 @@ type Protocol struct {
 	HandshakeTimeout int
 }
 
+type Bucket struct {
+	Size          int
+	Channel       int
+	Room          int
+	RoutineAmount uint64
+	RoutineSize   int
+}
+
 func init() {
 	flag.StringVar(&confPath, "conf", "./../../config/comet.yaml", "default config path")
 }
 
-func Init() error {
+func Init() (err error) {
 	Conf = &Config{}
 	config := viper.New()
 	config.SetConfigFile(confPath)
 	config.SetConfigType("yaml")
-	if err := config.ReadInConfig(); err != nil {
-		return err
+	if err = config.ReadInConfig(); err != nil {
+		return
 	}
-	if err := config.Unmarshal(Conf); err != nil {
-		return err
+	if err = config.Unmarshal(Conf); err != nil {
+		return
 	}
-	return nil
+	return
 }
