@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/spf13/viper v1.14.0
+	github.com/zhenjl/cityhash v0.0.0-20131128155616-cdd6a94144ab
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
 )
@@ -21,7 +22,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
-	github.com/zhenjl/cityhash v0.0.0-20131128155616-cdd6a94144ab // indirect
 	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b // indirect
 	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
 	golang.org/x/text v0.4.0 // indirect

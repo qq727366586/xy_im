@@ -3,18 +3,33 @@ package conf
 import (
 	"flag"
 	"github.com/spf13/viper"
+	"os"
 )
 
 var (
 	confPath string
+	host     string
 	Conf     *Config
 )
 
 type Config struct {
+	Env       *Env
+	RPCClient *RPCClient
 	TCP       *TCP
 	Websocket *Websocket
 	Protocol  *Protocol
 	Bucket    *Bucket
+}
+
+type Env struct {
+	DeployEnv string
+	Host      string
+}
+
+type RPCClient struct {
+	Dial    int
+	Timeout int
+	Bind    string
 }
 
 type TCP struct {
@@ -55,7 +70,10 @@ type Bucket struct {
 }
 
 func init() {
+	defHost, _ := os.Hostname()
 	flag.StringVar(&confPath, "conf", "./../../config/comet.yaml", "default config path")
+	flag.StringVar(&host, "host", defHost, "machine hostname, also can use default machine hostname")
+
 }
 
 func Init() (err error) {

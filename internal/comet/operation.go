@@ -3,6 +3,7 @@ package comet
 import (
 	"context"
 	"time"
+	"xy_im/api/logic"
 	"xy_im/api/protocol"
 )
 

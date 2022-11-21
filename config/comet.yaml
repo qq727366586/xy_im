@@ -1,3 +1,8 @@
+rpcServer:
+  dial: 1
+  timeout: 1
+  bind: "127.0.0.1:8080"
+
 tcp:
   bind:
     - ":3101"
@@ -8,7 +13,7 @@ tcp:
   readBuf: 1024
   readBufSize: 8192
   writer: 32
-  writerBuf: 1024
+  writeBuf: 1024
   writeBufSize: 8129
 
 websocket:

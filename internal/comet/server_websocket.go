@@ -19,11 +19,6 @@ var (
 	maxInt = 1<<31 - 1
 )
 
-const (
-	minServerHeartbeat = time.Minute * 10
-	maxServerHeartbeat = time.Minute * 30
-)
-
 // 初始化ws
 func InitWebsocket(server *Server, addrs []string, accept int) (err error) {
 	var (
