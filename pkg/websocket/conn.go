@@ -223,3 +223,7 @@ func maskBytes(key []byte, pos int, b []byte) int {
 	}
 	return pos & 3
 }
+
+func (c *Conn) Close() error {
+	return c.rwc.Close()
+}

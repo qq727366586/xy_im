@@ -4,7 +4,7 @@ package comet;
 
 option go_package = "api/comet";
 
-import "protocol/protocol.proto";
+import "protocol";
 
 message PushMsgReq {
     repeated string keys = 1;

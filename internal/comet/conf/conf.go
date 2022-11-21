@@ -14,6 +14,7 @@ type Config struct {
 	TCP       *TCP
 	Websocket *Websocket
 	Protocol  *Protocol
+	Bucket    *Bucket
 }
 
 type TCP struct {

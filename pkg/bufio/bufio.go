@@ -53,6 +53,10 @@ func (b *Reader) Buffered() int {
 	return b.w - b.r
 }
 
+func (b *Reader) ResetBuffer(r io.Reader, buf []byte) {
+	b.reset(buf, r)
+}
+
 func (b *Reader) reset(buf []byte, r io.Reader) {
 	*b = Reader{buf: buf, rd: r}
 }

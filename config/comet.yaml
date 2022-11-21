@@ -26,3 +26,11 @@ protocol:
   svrProto: 10
   cliProto: 5
   handshakeTimeout: 8
+
+bucket:
+  size: 32
+  channel: 1024
+  room: 1024
+  routineAmount: 32
+  routineSize: 1024
+

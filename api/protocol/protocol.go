@@ -94,3 +94,27 @@ func (p *Proto) WriteWebsocket(ws *websocket.Conn) (err error) {
 	}
 	return
 }
+
+func (p *Proto) WriteWebsocketHeart(wr *websocket.Conn, online int32) (err error) {
+	var (
+		buf     []byte
+		packLen int
+	)
+	packLen = _rawHeaderSize + _heartSize
+	// websocket header
+	if err = wr.WriteHeader(websocket.BinaryMessage, packLen); err != nil {
+		return
+	}
+	if buf, err = wr.Peek(packLen); err != nil {
+		return
+	}
+	// proto header
+	binary.BigEndian.PutInt32(buf[_packOffset:], int32(packLen))
+	binary.BigEndian.PutInt16(buf[_headerOffset:], int16(_rawHeaderSize))
+	binary.BigEndian.PutInt16(buf[_verOffset:], int16(p.Ver))
+	binary.BigEndian.PutInt32(buf[_opOffset:], p.Op)
+	binary.BigEndian.PutInt32(buf[_seqOffset:], p.Seq)
+	// proto body
+	binary.BigEndian.PutInt32(buf[_heartOffset:], online)
+	return
+}
