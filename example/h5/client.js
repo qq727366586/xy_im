@@ -39,6 +39,7 @@
             }
 
             ws.onmessage = function(evt) {
+                console.log(evt.data)
                 var data = evt.data;
                 var dataView = new DataView(data, 0);
                 var packetLen = dataView.getInt32(packetOffset);

@@ -171,9 +171,7 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 		if p, err = ch.CliProto.Set(); err != nil {
 			break
 		}
-
 		if err = p.ReadWebSocket(ws); err != nil {
-			fmt.Println(err)
 			break
 		}
 		if p.Op == protocol.OpHeartbeat {
@@ -252,7 +250,6 @@ func (s *Server) dispatchWebsocket(ws *websocket.Conn, wp *bytes.Pool, wb *bytes
 				if p, err = ch.CliProto.Get(); err != nil {
 					break
 				}
-				// 如果是心跳reply
 				if p.Op == protocol.OpHeartbeatReply {
 					if ch.Room != nil {
 						online = ch.Room.OnlineNum()
@@ -265,9 +262,10 @@ func (s *Server) dispatchWebsocket(ws *websocket.Conn, wp *bytes.Pool, wb *bytes
 						goto failed
 					}
 				}
+				p.Body = nil // 避免内存泄漏
+				ch.CliProto.GetAdv()
 			}
-			p.Body = nil // 避免内存泄漏
-			ch.CliProto.GetAdv()
+
 		default:
 			if err = p.WriteWebsocket(ws); err != nil {
 				goto failed

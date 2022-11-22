@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"errors"
+	"fmt"
 	"xy_im/pkg/encoding/binary"
 	"xy_im/pkg/websocket"
 )
@@ -97,6 +98,7 @@ func (p *Proto) WriteWebsocket(ws *websocket.Conn) (err error) {
 }
 
 func (p *Proto) WriteWebsocketHeart(wr *websocket.Conn, online int32) (err error) {
+	fmt.Println("-")
 	var (
 		buf     []byte
 		packLen int
