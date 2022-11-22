@@ -1,7 +1,13 @@
 package conf
 
+import (
+	"flag"
+	"github.com/spf13/viper"
+)
+
 var (
-	Conf *Config
+	confPath string
+	Conf     *Config
 )
 
 type Config struct {
@@ -22,4 +28,22 @@ type RPCServer struct {
 	ForceCloseWait    int
 	KeepAliveInterval int
 	KeepAliveTimeout  int
+}
+
+func init() {
+	flag.StringVar(&confPath, "conf", "./../../config/logic.yaml", "default config path")
+}
+
+func Init() (err error) {
+	Conf = &Config{}
+	config := viper.New()
+	config.SetConfigFile(confPath)
+	config.SetConfigType("yaml")
+	if err = config.ReadInConfig(); err != nil {
+		return
+	}
+	if err = config.Unmarshal(Conf); err != nil {
+		return
+	}
+	return
 }
