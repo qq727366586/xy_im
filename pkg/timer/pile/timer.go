@@ -117,11 +117,11 @@ func (t *Timer) get() (td *TimerData) {
 
 func (t *Timer) Add(expire time.Duration, fn func()) (td *TimerData) {
 	t.lock.Lock()
-	defer t.lock.Unlock()
 	td = t.get()
 	td.expire = time.Now().Add(expire)
 	td.fn = fn
 	t.add(td)
+	t.lock.Unlock()
 	return
 }
 
@@ -139,9 +139,9 @@ func (t *Timer) add(td *TimerData) {
 // 删除
 func (t *Timer) Del(td *TimerData) {
 	t.lock.Lock()
-	defer t.lock.Unlock()
 	t.del(td)
 	t.put(td)
+	t.lock.Unlock()
 }
 
 func (t *Timer) del(td *TimerData) {

@@ -55,6 +55,7 @@ func (p *Proto) ReadWebSocket(ws *websocket.Conn) (err error) {
 	}
 	packLen = binary.BigEndian.Int32(buf[_packOffset:_headerOffset])
 	headerLen = binary.BigEndian.Int16(buf[_headerOffset:_verOffset])
+	headerLen = binary.BigEndian.Int16(buf[_headerOffset:_verOffset])
 	p.Ver = int32(binary.BigEndian.Int16(buf[_verOffset:_opOffset]))
 	p.Op = binary.BigEndian.Int32(buf[_opOffset:_seqOffset])
 	p.Seq = binary.BigEndian.Int32(buf[_seqOffset:])

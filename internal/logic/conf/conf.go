@@ -11,14 +11,33 @@ var (
 )
 
 type Config struct {
-	Env       *Env
-	RPCServer *RPCServer
+	Env        *Env
+	Node       *Node
+	Redis      *Redis
+	HTTPServer *HTTPServer
+	RPCServer  *RPCServer
 }
 
 type Env struct {
 	DeployEnv string
 	Host      string
 }
+
+type Node struct {
+	TCPPort      int
+	WSPort       int
+	WSSPort      int
+	HeartbeatMax int
+	Heartbeat    int
+}
+
+type HTTPServer struct {
+	Network      string
+	Addr         string
+	ReadTimeout  int
+	WriteTimeout int
+}
+
 type RPCServer struct {
 	Network           string
 	Addr              string
@@ -28,6 +47,18 @@ type RPCServer struct {
 	ForceCloseWait    int
 	KeepAliveInterval int
 	KeepAliveTimeout  int
+}
+
+type Redis struct {
+	Network      string
+	Addr         string
+	Auth         string
+	IdleTimeout  int
+	DialTimeout  int
+	ReadTimeout  int
+	WriteTimeout int
+	PoolSize     int
+	Expire       int
 }
 
 func init() {

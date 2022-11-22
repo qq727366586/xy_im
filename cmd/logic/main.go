@@ -8,6 +8,7 @@ import (
 	"xy_im/internal/logic"
 	"xy_im/internal/logic/conf"
 	"xy_im/internal/logic/grpc"
+	"xy_im/internal/logic/http"
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 		panic(err)
 	}
 	srv := logic.New(conf.Conf)
+	http.New(conf.Conf)
 	rpcSrv := grpc.New(conf.Conf.RPCServer, srv)
 
 	// 关闭
@@ -25,6 +27,7 @@ func main() {
 		s := <-c
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
+			http.Close()
 			rpcSrv.GracefulStop()
 			return
 		case syscall.SIGHUP:

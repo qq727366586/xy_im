@@ -9,7 +9,7 @@ import (
 )
 
 func TestWs(t *testing.T) {
-	ln, err := net.Listen("tcp", ":8080")
+	ln, err := net.Listen("tcp", ":3102")
 	if err != nil {
 		t.FailNow()
 	}

@@ -90,7 +90,7 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 
 	// 1.handshake
 	step := 1
-	trd := tr.Add(time.Duration(s.c.Protocol.HandshakeTimeout), func() {
+	trd := tr.Add(time.Duration(s.c.Protocol.HandshakeTimeout)*time.Second, func() {
 		// tls close block
 		_ = conn.SetReadDeadline(time.Now().Add(time.Millisecond * 100))
 		_ = conn.Close()
@@ -134,7 +134,6 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 		}
 		return
 	}
-
 	// 4.auth
 	step = 4
 	var (
@@ -145,7 +144,7 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 		p       *protocol.Proto
 	)
 	if p, err = ch.CliProto.Set(); err == nil {
-		if ch.Mid, ch.Key, rid, accepts, hb, err = s.authWebsocket(c, ws, p, req.Header.Get("Cookie")); err != nil {
+		if ch.Mid, ch.Key, rid, accepts, hb, err = s.authWebsocket(c, ws, p, req.Header.Get("Cookie")); err == nil {
 			ch.Watch(accepts...)
 			b = s.Bucket(ch.Key)
 			err = b.Put(rid, ch)
@@ -159,24 +158,27 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 		if err != io.EOF && err != websocket.ErrMessageClose {
 			fmt.Println("4. handshake err: ", err)
 		}
+		return
 	}
 
 	// 5.dispatch
 	trd.Key = ch.Key
-	tr.Set(trd, hb)
+	fmt.Println(hb * time.Second)
+	tr.Set(trd, hb*time.Second)
 	go s.dispatchWebsocket(ws, wp, wb, ch)
 	serverHeartBeat := s.RandServerHeartBeat()
-	// 监听输入
 	for {
 		if p, err = ch.CliProto.Set(); err != nil {
 			break
 		}
+
 		if err = p.ReadWebSocket(ws); err != nil {
+			fmt.Println(err)
 			break
 		}
 		if p.Op == protocol.OpHeartbeat {
 			// 重新计时
-			tr.Set(trd, hb)
+			tr.Set(trd, hb*time.Second)
 			p.Op = protocol.OpHeartbeatReply
 			p.Body = nil
 			if now := time.Now(); now.Sub(lastHB) > serverHeartBeat {
@@ -187,7 +189,9 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 			step++
 		} else {
 			// todo
+			fmt.Println("3")
 		}
+
 		ch.CliProto.SetAdv()
 		ch.Signal()
 	}
@@ -201,6 +205,7 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 	rp.Put(rb)
 	if err = s.Disconnect(c, ch.Mid, ch.Key); err != nil {
 		fmt.Println("5. s.Disconnect err: ", err)
+		return
 	}
 }
 
@@ -229,48 +234,51 @@ func (s *Server) authWebsocket(c context.Context, ws *websocket.Conn, p *protoco
 // dispatch
 func (s *Server) dispatchWebsocket(ws *websocket.Conn, wp *bytes.Pool, wb *bytes.Buffer, ch *Channel) {
 	// 接收数据
-	p := ch.Ready()
 	var (
 		finish bool
 		online int32
 		err    error
 	)
-	switch p {
-	// 结束
-	case protocol.ProtoFinish:
-		finish = true
-		goto failed
-	// 输出参数
-	case protocol.ProtoReady:
-		for {
-			if p, err = ch.CliProto.Get(); err != nil {
-				break
-			}
-			// 如果是心跳reply
-			if p.Op == protocol.OpHeartbeatReply {
-				if ch.Room != nil {
-					online = ch.Room.OnlineNum()
-				}
-				if err = p.WriteWebsocketHeart(ws, online); err != nil {
-					goto failed
-				}
-			} else {
-				if err = p.WriteWebsocket(ws); err != nil {
-					goto failed
-				}
-			}
-		}
-		p.Body = nil // 避免内存泄漏
-		ch.CliProto.GetAdv()
-	default:
-		if err = p.WriteWebsocket(ws); err != nil {
+	for {
+		p := ch.Ready()
+		switch p {
+		// 结束
+		case protocol.ProtoFinish:
+			finish = true
 			goto failed
+		// 输出参数
+		case protocol.ProtoReady:
+			for {
+				if p, err = ch.CliProto.Get(); err != nil {
+					break
+				}
+				// 如果是心跳reply
+				if p.Op == protocol.OpHeartbeatReply {
+					if ch.Room != nil {
+						online = ch.Room.OnlineNum()
+					}
+					if err = p.WriteWebsocketHeart(ws, online); err != nil {
+						goto failed
+					}
+				} else {
+					if err = p.WriteWebsocket(ws); err != nil {
+						goto failed
+					}
+				}
+			}
+			p.Body = nil // 避免内存泄漏
+			ch.CliProto.GetAdv()
+		default:
+			if err = p.WriteWebsocket(ws); err != nil {
+				goto failed
+			}
 		}
 		// 饥饿发送
 		if err = ws.Flush(); err != nil {
 			break
 		}
 	}
+
 failed:
 	if err != nil && err != io.EOF && err != websocket.ErrMessageClose {
 		fmt.Println("dispatch err: ", err)

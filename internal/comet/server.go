@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/zhenjl/cityhash"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 	"time"
 	"xy_im/api/logic"
@@ -34,10 +35,11 @@ type Server struct {
 }
 
 func newLogicClient(c *conf.RPCClient) logic.LogicClient {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.Dial))
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.Dial)*time.Second)
 	defer cancel()
 	conn, err := grpc.DialContext(ctx, c.Bind,
 		[]grpc.DialOption{
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
 			grpc.WithInitialWindowSize(grpcInitialWindowSize),
 			grpc.WithInitialConnWindowSize(grpcInitialConnWindowSize),
 			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(grpcMaxCallMsgSize)),
@@ -52,7 +54,6 @@ func newLogicClient(c *conf.RPCClient) logic.LogicClient {
 		panic(err)
 	}
 	return logic.NewLogicClient(conn)
-
 }
 
 func NewServer(c *conf.Config) *Server {

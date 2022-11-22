@@ -1,7 +1,15 @@
+env:
+  host: "comet"
+
+rpcClient:
+  dial: 1
+  timeout: 1
+  bind: ":3001"
+
 rpcServer:
   dial: 1
   timeout: 1
-  bind: "127.0.0.1:8080"
+  bind: ":4000"
 
 tcp:
   bind:
@@ -30,7 +38,7 @@ protocol:
   timerSize: 2048
   svrProto: 10
   cliProto: 5
-  handshakeTimeout: 8
+  handshakeTimeout: 5
 
 bucket:
   size: 32
