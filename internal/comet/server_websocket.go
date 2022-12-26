@@ -163,7 +163,6 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 
 	// 5.dispatch
 	trd.Key = ch.Key
-	fmt.Println(hb * time.Second)
 	tr.Set(trd, hb*time.Second)
 	go s.dispatchWebsocket(ws, wp, wb, ch)
 	serverHeartBeat := s.RandServerHeartBeat()
@@ -187,7 +186,6 @@ func (s *Server) ServeWebsocket(conn net.Conn, rp, wp *bytes.Pool, tr *timer.Tim
 			step++
 		} else {
 			// todo
-			fmt.Println("3")
 		}
 
 		ch.CliProto.SetAdv()
